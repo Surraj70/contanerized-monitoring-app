@@ -1,0 +1,39 @@
+global:
+  resolve_timeout: 5m
+  slack_api_url: 'https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK'
+
+route:
+  group_by: ['alertname', 'instance']
+  group_wait: 30s        # Wait before sending first alert in a group
+  group_interval: 5m     # Wait before sending new alerts to the same group
+  repeat_interval: 1h    # Resend if alert is still firing after 1 hour
+  receiver: 'slack-notifications'
+
+  # Route critical alerts to a different channel
+  routes:
+    - match:
+        severity: critical
+      receiver: 'slack-critical'
+
+receivers:
+  - name: 'slack-notifications'
+    slack_configs:
+      - channel: '#alerts'
+        title: '{{ .CommonAnnotations.summary }}'
+        text: '{{ .CommonAnnotations.description }}'
+        send_resolved: true  # Notify when alert clears
+
+  - name: 'slack-critical'
+    slack_configs:
+      - channel: '#alerts-critical'
+        title: '🚨 CRITICAL: {{ .CommonAnnotations.summary }}'
+        text: '{{ .CommonAnnotations.description }}'
+        send_resolved: true
+
+inhibit_rules:
+  # Suppress warning if critical is already firing for the same instance
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['instance']

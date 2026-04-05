@@ -1,0 +1,35 @@
+global:
+  scrape_interval: 15s      # Scrape every 15 seconds
+  evaluation_interval: 15s  # Evaluate alert rules every 15 seconds
+
+# Load alert rules from a separate file
+rule_files:
+  - "alert_rules.yml"
+
+# Where Prometheus sends alerts
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: ['alertmanager:9093']
+
+scrape_configs:
+  # Scrape Prometheus itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Scrape your Node.js app
+  - job_name: 'nodejs_app'
+    static_configs:
+      - targets: ['app:3000']  # "app" = service name in docker-compose
+    metrics_path: '/metrics'
+
+  # Scrape host-level metrics (CPU, RAM, disk)
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['node_exporter:9100']
+
+  # Scrape container-level metrics
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['cadvisor:8080']

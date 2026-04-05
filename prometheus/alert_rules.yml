@@ -1,0 +1,33 @@
+groups:
+  - name: cpu_and_memory_alerts
+    rules:
+
+      # Alert when CPU usage is above 80% for 2 minutes
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is {{ $value | printf \"%.1f\" }}% — above the 80% threshold."
+
+      # Alert when memory usage is above 85%
+      - alert: HighMemoryUsage
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 85
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is {{ $value | printf \"%.1f\" }}%."
+
+      # Alert when the app container goes down
+      - alert: AppContainerDown
+        expr: up{job="nodejs_app"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Node.js app is down"
+          description: "The app container has been unreachable for over 1 minute."
