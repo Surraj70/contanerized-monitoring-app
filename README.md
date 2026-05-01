@@ -109,7 +109,11 @@ Import these community dashboards after connecting Prometheus as a data source:
 
 ## 📸 Screenshots
 
-> *(Add your Grafana dashboard and Slack alert screenshots here)*
+<img width="600" alt="1775378188591" src="https://github.com/user-attachments/assets/f54a7094-b3df-462b-a7f9-2f35214c277a" />
+<img width="600" alt="1775378188717" src="https://github.com/user-attachments/assets/6fd1880c-8929-4338-a3af-d09091db1065" />
+<img width="600" alt="1775378187860" src="https://github.com/user-attachments/assets/2ee4b5ef-08c3-4882-bd20-7a283fc165b2" />
+<img width="600" alt="1775378188304" src="https://github.com/user-attachments/assets/2d71b6d3-7e3a-4feb-8945-5a294540f9db" />
+
 
 ---
 
